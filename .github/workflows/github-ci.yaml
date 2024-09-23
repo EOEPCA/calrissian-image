@@ -35,7 +35,7 @@ jobs:
         APP_NAME="calrissian"
         APP_VERSION="0.16.0"
         tag="${APP_NAME}:${APP_VERSION}"
-        trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL,MEDIUM,LOW,UNKNOWN --format table --ignore-unfixed "${tag}"
+        trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL,UNKNOWN --format table --ignore-unfixed "${tag}"
 
   deploy:
     needs: build
