@@ -12,14 +12,14 @@ jobs:
     - uses: actions/checkout@v4
     
     # # Step 2: Install Trivy
-    # - name: Install Trivy
-    #   run: |
-    #     sudo apt-get update -y
-    #     sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-    #     wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-    #     echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-    #     sudo apt-get update -y
-    #     sudo apt-get install -y trivy
+     - name: Install Trivy
+       run: |
+         sudo apt-get update -y
+         sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+         wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+         echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+         sudo apt-get update -y
+         sudo apt-get install -y trivy
 
     # Step 2: Build Docker Image
     - name: Build Docker Image
@@ -35,7 +35,6 @@ jobs:
         APP_NAME="calrissian"
         APP_VERSION="0.16.0"
         tag="${APP_NAME}:${APP_VERSION}"
-        docker pull aquasec/trivy:latest
         trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL,MEDIUM,LOW,UNKNOWN --format table --ignore-unfixed "${tag}"
 
   deploy:
