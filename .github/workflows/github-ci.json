@@ -1,0 +1,8 @@
+{
+    "name": "Workflow to build and push docker image",
+    "description": "Workflow to build and push docker image",
+    "iconName": "demo-icon",
+    "categories": [
+        "Python"
+    ]
+}

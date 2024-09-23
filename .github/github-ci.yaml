@@ -1,0 +1,59 @@
+name: Build, Test, and Deploy Docker Image
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Step 1: Checkout repository
+    - uses: actions/checkout@v4
+    
+    # # Step 2: Install Trivy
+    # - name: Install Trivy
+    #   run: |
+    #     sudo apt-get update -y
+    #     sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+    #     wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+    #     echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+    #     sudo apt-get update -y
+    #     sudo apt-get install -y trivy
+
+    # Step 2: Build Docker Image
+    - name: Build Docker Image
+      run: |
+        APP_NAME="calrissian"
+        APP_VERSION="0.16.0"
+        tag="${APP_NAME}:${APP_VERSION}"
+        docker build -t "${tag}" --file Dockerfile .
+
+    # Step 3: Scan Docker Image with Trivy
+    - name: Scan Docker Image with Trivy
+      run: |
+        APP_NAME="calrissian"
+        APP_VERSION="0.16.0"
+        tag="${APP_NAME}:${APP_VERSION}"
+        docker pull aquasec/trivy:latest
+        trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL,MEDIUM,LOW,UNKNOWN --format table --ignore-unfixed "${tag}"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    # Step 1: Checkout repository
+    - uses: actions/checkout@v4
+
+    # Step 2: Log in to Docker Registry (use GitHub secrets for security)
+    - name: Login to Docker Registry
+      run: |
+        echo "${{ secrets.CR_PASSWORD }}" | docker login "${{ secrets.CR_REGISTRY }}" -u "${{ secrets.CR_USERNAME }}" --password-stdin
+
+    # Step 3: Push Docker Image to Registry
+    - name: Push Docker Image to Registry
+      run: |
+        APP_NAME="calrissian"
+        APP_VERSION="0.16.0"
+        tag="${APP_NAME}:${APP_VERSION}"
+        docker push "${tag}"
