@@ -1,6 +1,6 @@
 # calrissian-image
 
-This repository contains the dockerfile for building a calrissian image fro EOEPCA+
+This repository contains the dockerfile for building a calrissian image for EOEPCA+
 
 The main differences from the official calrissian image: 
 
