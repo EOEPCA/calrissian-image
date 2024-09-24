@@ -27,7 +27,7 @@ jobs:
         APP_NAME="calrissian"
         APP_VERSION="0.16.0"
         tag="${APP_NAME}:${APP_VERSION}"
-        echo "${{ secrets.CR_PASSWORD }}" | docker login -u '${{ secrets.CR_USERNAME }}' --password-stdin "${{ secrets.CR_REGISTRY }}"
+        echo "${{ secrets.CR_PASSWORD }}" | docker login -u "${{ secrets.CR_USERNAME }}" --password-stdin "${{ secrets.CR_REGISTRY }}"
         docker build -t "${{ secrets.CR_REGISTRY }}/${{ secrets.CR_REPO }}/${tag}" --file Dockerfile .
         docker images
 
@@ -53,7 +53,7 @@ jobs:
         APP_NAME="calrissian"
         APP_VERSION="0.16.0"
         tag="${APP_NAME}:${APP_VERSION}"
-        echo "${{ secrets.CR_PASSWORD }}" | docker login -u '${{ secrets.CR_USERNAME }}' --password-stdin "${{ secrets.CR_REGISTRY }}"
+        echo "${{ secrets.CR_PASSWORD }}" | docker login -u "${{ secrets.CR_USERNAME }}" --password-stdin "${{ secrets.CR_REGISTRY }}"
         trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL,UNKNOWN --format table "${{ secrets.CR_REGISTRY }}"/"${{ secrets.CR_REPO }}"/"${tag}"
 
   deploy:
@@ -82,7 +82,7 @@ jobs:
     # Step 5: Log in to Docker Registry (use GitHub secrets for security)
     - name: Login to Docker Registry
       run: |
-        echo "${{ secrets.CR_PASSWORD }}" | docker login -u '${{ secrets.CR_USERNAME }}' --password-stdin "${{ secrets.CR_REGISTRY }}"
+        echo "${{ secrets.CR_PASSWORD }}" | docker login -u "${{ secrets.CR_USERNAME }}" --password-stdin "${{ secrets.CR_REGISTRY }}"
 
     # Step 6: Push Docker Image to Registry
     - name: Push Docker Image to Registry
